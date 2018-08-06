@@ -1,0 +1,5 @@
+#
+# Modifications for Samsung Galaxy S9 (starlte)
+#
+CONFIG_OIS_USE_RUMBA_S4=y
+CONFIG_CAMERA_STAR=y
