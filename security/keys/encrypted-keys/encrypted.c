@@ -156,7 +156,7 @@ static int valid_master_desc(const char *new_desc, const char *orig_desc)
 	if (orig_desc && strncmp(new_desc, orig_desc, prefix_len))
 		return -EINVAL;
 
- 	return 0;
+	return 0;
 }
 
 /*
