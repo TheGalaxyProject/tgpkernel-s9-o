@@ -6285,12 +6285,12 @@ static int ufs_get_device_desc(struct ufs_hba *hba,
 	}
 
 	err = ufshcd_read_health_desc(hba, health_buf,
-					QUERY_DESC_HEALTH_MAX_SIZE);
+					QUERY_DESC_HEALTH_DEF_SIZE);
 	if (err)
 		printk("%s: DEVICE_HEALTH desc read fail, err  = %d\n", __FUNCTION__, err);
 
 	/* getting Life Time at Device Health DESC*/
-	card_data->lifetime = health_buf[HEALTH_DEVICE_DESC_PARAM_LIFETIMEA];
+	dev_desc->lifetime = health_buf[HEALTH_DEVICE_DESC_PARAM_LIFETIMEA];
 
 	/*
 	 * getting vendor (manufacturerID) and Bank Index in big endian
@@ -6299,8 +6299,8 @@ static int ufs_get_device_desc(struct ufs_hba *hba,
 	dev_desc->wmanufacturerid = desc_buf[DEVICE_DESC_PARAM_MANF_ID] << 8 |
 				     desc_buf[DEVICE_DESC_PARAM_MANF_ID + 1];
 
-	hba->manufacturer_id = card_data->wmanufacturerid;
-	hba->lifetime = card_data->lifetime;
+	hba->manufacturer_id = dev_desc->wmanufacturerid;
+	hba->lifetime = dev_desc->lifetime;
 
 #ifdef CONFIG_JOURNAL_DATA_TAG
 	if (hba->manufacturer_id == UFS_VENDOR_SAMSUNG &&
@@ -6324,7 +6324,7 @@ static int ufs_get_device_desc(struct ufs_hba *hba,
 	/*product name*/
 	model_index = desc_buf[DEVICE_DESC_PARAM_PRDCT_NAME];
 
-	memset(str_desc_buf, 0, QUERY_DESC_STRING_MAX_SIZE);
+	memset(str_desc_buf, 0, QUERY_DESC_STRING_DEF_SIZE);
 	err = ufshcd_read_string_desc(hba, model_index, str_desc_buf,
 				QUERY_DESC_MAX_SIZE, ASCII_STD);
 	if (err) {
@@ -6343,17 +6343,17 @@ static int ufs_get_device_desc(struct ufs_hba *hba,
 
 	/*serial number*/
 	serial_num_index = desc_buf[DEVICE_DESC_PARAM_SN];
-	memset(str_desc_buf, 0, QUERY_DESC_STRING_MAX_SIZE);
+	memset(str_desc_buf, 0, QUERY_DESC_STRING_DEF_SIZE);
 
 	/*spec is unicode but sec use hex data*/
 	ascii_type = UTF16_STD;
 
 	err = ufshcd_read_string_desc(hba, serial_num_index, str_desc_buf,
-		 QUERY_DESC_STRING_MAX_SIZE, ascii_type);
+		 QUERY_DESC_STRING_DEF_SIZE, ascii_type);
 
 	if (err)
 		goto out;
-	str_desc_buf[QUERY_DESC_STRING_MAX_SIZE] = '\0';
+	str_desc_buf[QUERY_DESC_STRING_DEF_SIZE] = '\0';
 
 	ufs_set_sec_unique_number(hba, str_desc_buf, desc_buf);
 
@@ -6817,7 +6817,7 @@ static int ufshcd_query_ioctl(struct ufs_hba *hba, u8 lun, void __user *buffer)
 	case UPIU_QUERY_OPCODE_READ_DESC:
 		switch (ioctl_data->idn) {
 		case QUERY_DESC_IDN_DEVICE:
-		case QUERY_DESC_IDN_CONFIGURAION:
+		case QUERY_DESC_IDN_CONFIGURATION:
 		case QUERY_DESC_IDN_INTERCONNECT:
 		case QUERY_DESC_IDN_GEOMETRY:
 		case QUERY_DESC_IDN_POWER:
