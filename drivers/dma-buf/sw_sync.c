@@ -220,7 +220,7 @@ static const struct fence_ops timeline_fence_ops = {
  * A sync implementation should call this any time one of it's fences
  * has signaled or has an error condition.
  */
-static void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
+void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
 {
 	struct sync_pt *pt, *next;
 
@@ -249,6 +249,7 @@ static void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
 
 	spin_unlock_irq(&obj->lock);
 }
+EXPORT_SYMBOL(sync_timeline_signal);
 
 /**
  * sync_pt_create() - creates a sync pt
@@ -260,7 +261,7 @@ static void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
  * the generic sync_timeline struct. Returns the sync_pt object or
  * NULL in case of error.
  */
-static struct sync_pt *sync_pt_create(struct sync_timeline *obj,
+struct sync_pt *sync_pt_create(struct sync_timeline *obj,
 				      unsigned int value)
 {
 	struct sync_pt *pt;
@@ -281,6 +282,7 @@ static struct sync_pt *sync_pt_create(struct sync_timeline *obj,
 
 	return pt;
 }
+EXPORT_SYMBOL(sync_pt_create);
 
 /*
  * *WARNING*
