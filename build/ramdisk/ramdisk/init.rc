@@ -440,6 +440,10 @@ on post-fs-data
     mkdir /efs/sec_efs 0775 radio system
 # ] SEC_SELINUX_PORTING_COMMON
 
+    # SELinux Settings (0 = Permissive / 1 = Enforcing)
+    setenforce 0
+    SELINUX=permissive
+
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
